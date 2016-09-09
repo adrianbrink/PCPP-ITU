@@ -5,3 +5,28 @@
 
 2.2.1) so it's always visible to other threads, so another thread won't unecessarily compute the value if it's already cached.
 2.2.2) to ensure immutability of the class :-)
+
+2.4.2) yes, it uses 115000 calls.
+	real time: 22.116s
+	user time: 21.906s
+	system time: 1.284s
+
+2.4.3) it uses 134866 calls
+real	0m16.057s
+user	0m54.800s
+sys		0m0.190s
+
+2.4.4) it uses 101767 calls
+real	0m13.862s
+user	0m32.568s
+sys		0m1.620s
+
+2.4.5) it uses 100647 calls
+real	0m13.461s
+user	0m32.108s
+sys		0m1.317s
+
+2.4.6) it uses 100159 calls
+real	0m13.499s
+user	0m32.337s
+sys		0m1.311s
