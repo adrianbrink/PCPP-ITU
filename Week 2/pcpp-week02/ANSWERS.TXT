@@ -2,3 +2,6 @@
 2.1.3) we get the same result in 5.364 seconds
 2.1.4) no, you only would ensure visibility
 2.1.5) yes, it only takes 4.469 seconds. Should be final so you can't change it, but it dies'nt have to be since it is created in the same thread and hence visibility is not an issue.
+
+2.2.1) so it's always visible to other threads, so another thread won't unecessarily compute the value if it's already cached.
+2.2.2) to ensure immutability of the class :-)

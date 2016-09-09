@@ -41,3 +41,19 @@ class Histogram1 implements Histogram {
     return counts.length;
   }
 }
+
+class Histogram2 implements Histogram {
+  private final int[] counts; // needs to be final since the number of bins should never change
+  public Histogram1(int span) {
+    this.counts = new int[span];
+  }
+  public synchronized void increment(int bin) {
+    counts[bin] = counts[bin] + 1;
+  }
+  public synchronized int getCount(int bin) {
+    return counts[bin];
+  }
+  public int getSpan() {
+    return counts.length;
+  }
+}
