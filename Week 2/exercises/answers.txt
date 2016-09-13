@@ -32,7 +32,7 @@ This is why Memoizer4 is faster and uses less calls than Memoizer3
 21.30s user 0.96s system 9.328 total
 
 Memoizer5 uses the computeIfAbsent method and avoids the two stage test.
-it uses around the same calls and time.
+it uses the same calls as Memoizer4 and around the same time.
 
 2.4.7)
 ** to be finished **
