@@ -10,11 +10,12 @@ class ExTwoFour {
 	public static void main (String[] args)
 	{
 		Factorizer f = new Factorizer();
-	  //exerciseFactorizer(new Memoizer1<Long,long[]>(f));
+	  	//exerciseFactorizer(new Memoizer1<Long,long[]>(f));
 		//exerciseFactorizer(new Memoizer2<Long,long[]>(f));
 		//exerciseFactorizer(new Memoizer3<Long,long[]>(f));
 		//exerciseFactorizer(new Memoizer4<Long,long[]>(f));
-		exerciseFactorizer(new Memoizer5<Long,long[]>(f));
+		//exerciseFactorizer(new Memoizer5<Long,long[]>(f));
+		exerciseFactorizer(new Memoizer0<Long,long[]>(f));
 		//exerciseFactorizer(f);
 		System.out.println(f.getCount());
 	}
@@ -48,3 +49,27 @@ class ExTwoFour {
 		} catch (InterruptedException exn) { }
 	}
 }
+
+class Memoizer0<A, V> implements Computable<A, V> {
+  private final Map<A, V> cache = new ConcurrentHashMap<A, V>();
+  private final Computable<A, V> c;
+  
+  public Memoizer0(Computable<A, V> c) { this.c = c; }
+  
+  public V compute(A arg) throws InterruptedException {
+    V result = cache.computeIfAbsent(arg, (A argv) -> {
+      try{
+        return c.compute(argv);
+      } catch(InterruptedException e) {
+        return null;
+      }
+    });
+    
+    cache.putIfAbsent(arg, result);
+    
+    return result;
+  }
+}
+
+
+
