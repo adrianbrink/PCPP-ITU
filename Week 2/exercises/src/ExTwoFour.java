@@ -46,28 +46,5 @@ class ExTwoFour {
     }
 }
 
-class Memoizer0<A, V> implements Computable<A, V> {
-    private final Map<A, V> cache = new ConcurrentHashMap<A, V>();
-    private final Computable<A, V> c;
-
-    public Memoizer0(Computable<A, V> c) {
-        this.c = c;
-    }
-
-    public V compute(A arg) throws InterruptedException {
-        V result = cache.computeIfAbsent(arg, (A argv) -> {
-            try {
-                return c.compute(argv);
-            } catch (InterruptedException e) {
-                return null;
-            }
-        });
-
-        cache.putIfAbsent(arg, result);
-
-        return result;
-    }
-}
-
 
 
