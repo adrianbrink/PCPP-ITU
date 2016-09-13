@@ -2,16 +2,19 @@
 // sestoft@itu.dk * 2014-09-04
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 class SimpleHistogram {
     public static void main(String[] args) {
-        final int range = 100000;
+        final int range = 100_000;
         final int threadCount = 4;
-        final Histogram histogram = new Histogram2(30);
+//        final Histogram histogram = new Histogram2(30);
+        final Histogram histogram = new Histogram3(30);
+
 
         Thread[] threads = new Thread[threadCount];
         ArrayList<Integer> inputList = new ArrayList<>(range);
-        for (int i = 0; i <= range; i++) {
+        for (int i = 0; i < range; i++) {
             inputList.add(i, i);
         }
         Collections.shuffle(inputList);
@@ -40,8 +43,8 @@ class SimpleHistogram {
         } catch (InterruptedException exn) {
             System.out.println("something fucked up");
         }
+
         System.out.println(PrimeCounter.countSequential(range));
-//        countPrimeFactor(range, histogram);
         dump(histogram);
     }
 
@@ -69,7 +72,6 @@ class PrimeCounter {
         long copyOfInput = number;
         for (int i = 2; i <= copyOfInput; i++) {
             if (copyOfInput % i == 0) {
-                // Found a prime factor, add it to the bin
                 primefactors.add(i); // prime factor
                 copyOfInput /= i;
                 i--;
@@ -134,6 +136,29 @@ class Histogram2 implements Histogram {
 
     public synchronized int getCount(int bin) {
         return counts[bin];
+    }
+
+    public int getSpan() {
+        return counts.length;
+    }
+}
+
+class Histogram3 implements Histogram {
+    private final AtomicInteger[] counts; // needs to be final since the number of bins should never change
+
+    public Histogram3(int span) {
+        this.counts = new AtomicInteger[span];
+        for (int i = 0; i < span; i++) {
+            counts[i] = new AtomicInteger(0);
+        }
+    }
+
+    public void increment(int bin) {
+        counts[bin].addAndGet(1);
+    }
+
+    public  int getCount(int bin) {
+        return counts[bin].get();
     }
 
     public int getSpan() {
