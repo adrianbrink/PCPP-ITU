@@ -1,16 +1,47 @@
 // For week 2
 // sestoft@itu.dk * 2014-09-04
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 class SimpleHistogram {
     public static void main(String[] args) {
-        final int range = 100_000;
+        final int range = 100000;
+        final int threadCount = 4;
         final Histogram histogram = new Histogram2(30);
 
+        Thread[] threads = new Thread[threadCount];
+        ArrayList<Integer> inputList = new ArrayList<>(range);
+        for (int i = 0; i <= range; i++) {
+            inputList.add(i, i);
+        }
+        Collections.shuffle(inputList);
+
+        for (int i = 0; i < threadCount; i++) {
+            int perThread = range / threadCount;
+            int from = perThread * i;
+            int to = (i + 1 == threadCount) ? range : perThread * (i + 1);
+            List<Integer> list = inputList.subList(from, to);
+            threads[i] = new Thread(() -> {
+                for (Integer number : list) {
+                    int result = PrimeCounter.primeFactors(number).size();
+                    histogram.increment(result);
+                }
+            });
+        }
+
+        for (int t = 0; t < threadCount; t++) {
+            threads[t].start();
+        }
+
+        try {
+            for (int t = 0; t < threadCount; t++) {
+                threads[t].join();
+            }
+        } catch (InterruptedException exn) {
+            System.out.println("something fucked up");
+        }
         System.out.println(PrimeCounter.countSequential(range));
-        countPrimeFactor(range, histogram);
+//        countPrimeFactor(range, histogram);
         dump(histogram);
     }
 
@@ -50,7 +81,7 @@ class PrimeCounter {
     static long countSequential(int range) {
         long count = 0;
         final int from = 0, to = range;
-        for (int i = from; i < to; i++)
+        for (int i = from; i <= to; i++)
             if (isPrime(i))
                 count++;
         return count;
