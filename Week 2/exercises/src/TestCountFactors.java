@@ -1,13 +1,44 @@
 // For week 2
 // sestoft@itu.dk * 2014-08-29
+import java.util.concurrent.atomic.*;
 
 class TestCountFactors {
   public static void main(String[] args) {
-    final int range = 5_000_000;
-    int count = 0;
-    for (int p=0; p<range; p++)
-      count += countFactors(p);
-    System.out.printf("Total number of factors is %9d%n", count);
+
+    //MyAtomicInteger idx = new MyAtomicInteger();
+    AtomicInteger idx = new AtomicInteger();
+
+    //MyAtomicInteger count = new MyAtomicInteger();
+    AtomicInteger count = new AtomicInteger();
+
+    Thread[] threads = new Thread[10];
+
+    for (int i = 0; i <= 9; i++) {
+
+      System.out.println(idx.get());
+      int val = 500_000*idx.get();
+      int val1 = 500_000*(idx.get()+1);
+      threads[i] = new Thread(() -> {
+        System.out.println("Start: " + val + " " + val1);
+        for(int x = val; x<val1; x++) {
+          count.addAndGet(countFactors(x)); 
+        }
+      });
+      idx.addAndGet(1);
+      System.out.println(idx.get());
+    }
+
+    for (int t=0; t<10; t++) {
+      threads[t].start();
+    }
+
+    try {
+      for (int t=0; t<10; t++) {
+        threads[t].join();
+      }
+    } catch (InterruptedException exn) { System.out.println("fucked"); }
+
+    System.out.println(count.get());
   }
 
   public static int countFactors(int p) {
@@ -22,5 +53,21 @@ class TestCountFactors {
 	k++;
     }
     return factorCount;
+  }
+}
+
+
+class MyAtomicInteger {
+
+  private int value = 0;
+  public synchronized int addAndGet(int amount)
+  {
+    value += amount;
+    return value;
+  }
+
+  public synchronized int get()
+  {
+    return value;
   }
 }
