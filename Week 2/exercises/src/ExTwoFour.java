@@ -10,7 +10,7 @@ class ExTwoFour {
 	public static void main (String[] args)
 	{
 		Factorizer f = new Factorizer();
-	  	//exerciseFactorizer(new Memoizer1<Long,long[]>(f));
+	  //exerciseFactorizer(new Memoizer1<Long,long[]>(f));
 		//exerciseFactorizer(new Memoizer2<Long,long[]>(f));
 		//exerciseFactorizer(new Memoizer3<Long,long[]>(f));
 		//exerciseFactorizer(new Memoizer4<Long,long[]>(f));
@@ -23,7 +23,7 @@ class ExTwoFour {
 	{
 		final long start = 10_000_000_000L, range = 20_000L;
 		final int threadCount = 16;
-		Thread[] threads = new Thread[16];
+		Thread[] threads = new Thread[threadCount];
 
 		for (int t=0; t<threadCount; t++)
 		{
@@ -44,7 +44,7 @@ class ExTwoFour {
 		for(Thread thread : threads) thread.start();
 
 		try {
-			for (int t=0; t<10; t++) threads[t].join();
+			for (int t=0; t<threadCount; t++) threads[t].join();
 		} catch (InterruptedException exn) { }
 	}
 }

@@ -1,0 +1,38 @@
+2.1.1) 8.632 seconds
+2.1.3) we get the same result in 5.364 seconds
+2.1.4) no, you only would ensure visibility
+2.1.5) yes, it only takes 4.469 seconds. Should be final so you can't change it, but it dies'nt have to be since it is created in the same thread and hence visibility is not an issue.
+
+2.2.1) so it's always visible to other threads, so another thread won't unecessarily compute the value if it's already cached.
+2.2.2) to ensure immutability of the class :-)
+
+2.3.1) 
+
+2.4.2) yes, it uses 115000 calls.
+15.51s user 0.52s system 15.349 total
+
+2.4.3) it uses 163905 calls
+38.44s user 0.15s system 10.899 total
+
+Memoizer2 is faster than Memoizer1 because Memoizer1 locks the compute method so in effect only thread at a time can call it.
+Memoizer2 has a large risk of computing twice because the cache is only updated after the computation, and in the meanwhile another thread could see that the cache is empty and start the computation. That is why it uses more calls.
+
+2.4.4) it uses 116849 calls
+21.54s user 1.02s system 9.307 total
+
+Memoizer3 does less duplication of work than Memoizer2, because it adds a futuretask to the cache, and then computes it. So the window where duplication can happen is smaller since adding a future task to the cache is faster than computing the value and adding it to the cache.
+
+2.4.5) it uses 115000 calls
+21.20s user 0.97s system 9.325 total
+
+Memoizer4 checks if another thread has added a future task before it adds it. This way a thread can only wastefully create a futuretask, but it won't be executed.
+This is why Memoizer4 is faster and uses less calls than Memoizer3
+
+2.4.6) it uses 115000 calls
+21.30s user 0.96s system 9.328 total
+
+Memoizer5 uses the computeIfAbsent method and avoids the two stage test.
+it uses around the same calls and time.
+
+2.4.7)
+** to be finished **
