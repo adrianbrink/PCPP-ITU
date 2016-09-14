@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.LongAdder;
 
 class SimpleHistogram {
     public static void main(String[] args) {
-        final int range = 100_000;
+        final int range = 5_000_000;
         final int threadCount = 4;
 //        final Histogram histogram = new Histogram2(30);
 //        final Histogram histogram = new Histogram3(30);
@@ -29,7 +29,9 @@ class SimpleHistogram {
             List<Integer> list = inputList.subList(from, to);
             threads[i] = new Thread(() -> {
                 for (Integer number : list) {
-                    int result = PrimeCounter.primeFactors(number).size();
+                    //int result = PrimeCounter.primeFactors(number).size();
+                    int result = TestCountFactors.countFactors(number);
+                    
                     histogram.increment(result);
                 }
             });
