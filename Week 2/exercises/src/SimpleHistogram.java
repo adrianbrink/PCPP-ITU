@@ -3,13 +3,16 @@
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicIntegerArray;
+import java.util.concurrent.atomic.LongAdder;
 
 class SimpleHistogram {
     public static void main(String[] args) {
         final int range = 100_000;
         final int threadCount = 4;
 //        final Histogram histogram = new Histogram2(30);
-        final Histogram histogram = new Histogram3(30);
+//        final Histogram histogram = new Histogram3(30);
+        final Histogram histogram = new Histogram4(30);
 
 
         Thread[] threads = new Thread[threadCount];
@@ -101,6 +104,7 @@ interface Histogram {
     void increment(int bin);
     int getCount(int bin);
     int getSpan();
+    int[] getBins();
 }
 
 class Histogram1 implements Histogram {
@@ -121,6 +125,10 @@ class Histogram1 implements Histogram {
     public int getSpan() {
         return counts.length;
     }
+
+    public int[] getBins() {
+        return counts.clone();
+    }
 }
 
 class Histogram2 implements Histogram {
@@ -140,6 +148,10 @@ class Histogram2 implements Histogram {
 
     public int getSpan() {
         return counts.length;
+    }
+
+    public synchronized int[] getBins() {
+        return counts.clone();
     }
 }
 
@@ -163,6 +175,62 @@ class Histogram3 implements Histogram {
 
     public int getSpan() {
         return counts.length;
+    }
+
+    public int[] getBins() {
+        return new int[0];
+    }
+}
+
+class Histogram4 implements Histogram {
+    private final AtomicIntegerArray counts; // needs to be final since the number of bins should never change
+
+    public Histogram4(int span) {
+        this.counts = new AtomicIntegerArray(span);
+
+    }
+
+    public void increment(int bin) {
+        counts.addAndGet(bin, 1);
+    }
+
+    public  int getCount(int bin) {
+        return counts.get(bin);
+    }
+
+    public int getSpan() {
+        return counts.length();
+    }
+
+    public int[] getBins() {
+        return new int[0];
+    }
+}
+
+class Histogram5 implements Histogram {
+    private final LongAdder[] counts; // needs to be final since the number of bins should never change
+
+    public Histogram5(int span) {
+        this.counts = new LongAdder[span];
+        for (int i = 0; i < span; i++) {
+            counts[i] = new LongAdder();
+        }
+    }
+
+    public void increment(int bin) {
+        counts[bin].increment();
+    }
+
+    public  int getCount(int bin) {
+        return counts[bin].intValue();
+    }
+
+    public int getSpan() {
+        return counts.length;
+    }
+
+    public int[] getBins() {
+        return new int[0];
     }
 }
 
