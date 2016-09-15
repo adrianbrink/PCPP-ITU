@@ -28,5 +28,7 @@ This is why Memoizer4 is faster and uses less calls than Memoizer3
 21.30s user 0.96s system 9.328 total
 Memoizer5 uses the computeIfAbsent method and avoids the two stage test.
 it uses the same calls as Memoizer4 and around the same time.
-2.4.7)
+2.4.7)it uses 115000 calls
 26.02s user 0.57s system 13.196 total
+Memoizer0 uses also the computeIfAbsent method to avoid the two stage test.
+The differnce is that memoizer doesn't use FutureTasks, that could explain why it takes more time to finish.
