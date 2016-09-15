@@ -289,7 +289,7 @@ class Memoizer0<A, V> implements Computable<A, V> {
             }
         });
 
-        cache.putIfAbsent(arg, result);
+        cache.put(arg, result);
 
         return result;
     }
