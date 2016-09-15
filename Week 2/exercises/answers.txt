@@ -9,7 +9,7 @@
 2.3.1) counts needs to be declared final so that it is immutable.
 increment() and getCount() need to be synchronized since different threads can access them concurrently and update count
 2.3.2)
-
+2.3.3) AtomicInteger grants atomicity, thus it is thread-safe and doesn't need synchronized methods.
 2.4.1) see code
 2.4.2) yes, it uses 115000 calls.
 15.51s user 0.52s system 15.349 total

@@ -180,7 +180,13 @@ class Histogram3 implements Histogram {
     }
 
     public int[] getBins() {
-        return new int[0];
+        AtomicInteger[] counts2 = counts.clone();
+        int[] intArray = new int[counts2.length];
+        for(int i=0; i< counts2.length; i++)
+        {
+            intArray[i] = counts2[i].get();
+        }
+        return intArray;
     }
 }
 
@@ -205,7 +211,13 @@ class Histogram4 implements Histogram {
     }
 
     public int[] getBins() {
-        return new int[0];
+        AtomicIntegerArray counts2 = counts.clone();
+        int[] intArray = new int[counts2.length];
+        for(int i=0; i< counts2.length; i++)
+        {
+            intArray[i] = counts2.get(i);
+        }
+        return intArray;
     }
 }
 
