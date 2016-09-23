@@ -1,6 +1,12 @@
-Memoizer0                    1494247887,3 ns 121118770,08          2
-Memoizer1                    2347007659,6 ns 104657641,32          2
-Memoizer2                    1754647557,6 ns 78966038,67          2
-Memoizer3                    1473591670,1 ns 37837774,90          2
-Memoizer4                    1467172943,5 ns 106127748,65          2
-Memoizer5                    1381468968,0 ns 46552439,63          2
+# OS:   Mac OS X; 10.11.3; x86_64
+# JVM:  Oracle Corporation; 1.8.0_60
+# CPU:  null; 4 "cores"
+# Date: 2016-09-23T11:22:08+0200
+hashCode()                            3,7 ns       0,07   67108864
+Point creation                      102,0 ns       0,97    4194304
+Thread's work                      8752,2 ns     108,95      32768
+Thread create                      1330,0 ns      18,49     262144
+Thread create start               69513,6 ns    3986,01       4096
+Thread create start join          86746,3 ns    3211,42       4096
+ai value = 819140000
+Uncontended lock                      8,3 ns       0,09   33554432
