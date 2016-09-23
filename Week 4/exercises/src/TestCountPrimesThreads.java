@@ -12,7 +12,7 @@ public class TestCountPrimesThreads {
     // Mark6("countSequential", i -> countSequential(range));
     // Mark6("countParallel", i -> countParallelN(range, 10));
     Mark7("countSequential", i -> countSequential(range));
-    for (int c=1; c<=100; c++) {
+    for (int c=1; c<=32; c++) {
       final int threadCount = c;
       Mark7(String.format("countParallelLocal %6d", threadCount), 
             i -> countParallelNLocal(range, threadCount));
