@@ -1,12 +1,17 @@
 4.2.1
-For all of the tests it's clear that the function's runtime becomes a lot faster the more times it is run. This is probably due to java's 'Just In Time' optimizations that are put into action when Java's se
-strangenesses, such as large variation in the time
-measurements for each case
+For all of the tests it's clear that the function's runtime becomes a lot faster the more times it is run. This is probably due to java's 'Just In Time' optimizations that are put into action when Java's sees enough recurrent patterns so it can improve the run time by caching and other things.
+Also the standard deviation goes down as the number of runs goes up, which is expected as more samples leads to higher precision.
+It's also possible to see irregularities in the pattern of decreasing runtimes and standard deviations. 
+For example when looking at our results for Point Creation the runtime and std. deviation both jumps at a specific run, compared to its predecessors. This could be due to some background process running at the same time that interferes with the result.
 
-hashCode()
-Point Creation
-Thread's work
-Thread create
-thread create start
-thread create start join
-Uncontended lock
+
+4.2.2
+Are they plausible? Any surprises?
+Mention any cases where they deviate significantly from those shown in the lecture
+
+All of the results are very similar to the ones from the lecture for Intel i7. 
+The results are all a bit slower, which makes sense since my processor is Intel i5. 
+The only major deviation is the std. deviation for thread create start where the result from the lecture is 320 and mine is 2600. 
+
+
+
