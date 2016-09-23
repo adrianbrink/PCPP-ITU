@@ -1,0 +1,12 @@
+4.2.1
+For all of the tests it's clear that the function's runtime becomes a lot faster the more times it is run. This is probably due to java's 'Just In Time' optimizations that are put into action when Java's se
+strangenesses, such as large variation in the time
+measurements for each case
+
+hashCode()
+Point Creation
+Thread's work
+Thread create
+thread create start
+thread create start join
+Uncontended lock
