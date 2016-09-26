@@ -1,0 +1,134 @@
+
+Memory usage was most of the time 7-12% a few times spiking up to 18%
+RAM didn't change always a stable 2,7/7,8 GB
+# OS:   Windows 10; 10.0; amd64
+# JVM:  Oracle Corporation; 1.8.0_101
+# CPU:  Intel64 Family 6 Model 58 Stepping 9, GenuineIntel; 8 "cores"
+# Date: 2016-09-23T10:28:40+0200
+
+Mark1
+   0.1 ns
+
+Results completely useless, ran it 10 times in a row - all of them gave the same 0.1 ns result.
+It looks like the the machine is really great at "eliminating dead code"
+
+mark2
+  73.6 ns
+
+Can't really compare to the benchmarking paper as the results by running it multiple times along the 73 ns mark.
+And that is 2x as much as in the paper. Although looking at all the other results they are also along this time. 
+So I could say that it is plausible.
+
+
+Mark 3
+  84.2 ns
+  83.9 ns
+  75.3 ns
+  77.2 ns
+  76.1 ns
+  76.0 ns
+  82.4 ns
+  84.0 ns
+  78.6 ns
+  70.5 ns
+
+As mentioned before still worse than in the paper, but they are quite similar to mark 2
+
+Mark 4
+  79.0 ns +/-  3.613
+
+The results are quite similar to mark 3, but 6 ns seconds worse than those of mark 2
+
+Mark 5
+1073.1 ns +/-  2089.87          2
+ 396.5 ns +/-   112.69          4
+ 431.5 ns +/-   287.27          8
+ 513.2 ns +/-   580.90         16
+ 115.2 ns +/-    12.77         32
+2998.8 ns +/-  9063.17         64
+ 167.7 ns +/-   172.20        128
+ 110.1 ns +/-    16.64        256
+ 105.2 ns +/-     6.14        512
+ 102.2 ns +/-     5.72       1024
+ 103.3 ns +/-     1.89       2048
+ 103.9 ns +/-     1.38       4096
+  91.1 ns +/-     2.51       8192
+  89.5 ns +/-     3.73      16384
+  91.4 ns +/-     8.37      32768
+  84.9 ns +/-     0.47      65536
+  84.5 ns +/-     0.09     131072
+  84.5 ns +/-     0.07     262144
+  84.7 ns +/-     0.33     524288
+  84.8 ns +/-     0.37    1048576
+  84.2 ns +/-     0.96    2097152
+  79.4 ns +/-     6.94    4194304
+
+Here we also can see that the results in the end ar two times worse as in the paper. 
+The mean for the machine converges to the 70- something ns. There is also an exception in 64 iteration count, but not at 2048 iteration count.
+Also what is interesting is that the deviation is quite large for the last iteration.
+
+
+Mark 6
+multiply                          94514.8 ns  292270.30          2
+multiply                            478.2 ns     128.31          4
+multiply                            524.8 ns     313.42          8
+multiply                            629.8 ns     748.20         16
+multiply                            218.7 ns     292.05         32
+multiply                            149.4 ns      61.78         64
+multiply                            185.1 ns     181.32        128
+multiply                            133.8 ns      32.06        256
+multiply                            127.2 ns      21.41        512
+multiply                            114.7 ns       2.98       1024
+multiply                            117.2 ns       5.47       2048
+multiply                            114.7 ns       2.55       4096
+multiply                             92.6 ns       3.82       8192
+multiply                             90.6 ns       1.64      16384
+multiply                             86.0 ns       1.97      32768
+multiply                             88.8 ns       5.97      65536
+multiply                             84.5 ns       0.12     131072
+multiply                             85.8 ns       1.06     262144
+multiply                             87.3 ns       3.43     524288
+multiply                             85.1 ns       0.66    1048576
+multiply                             84.7 ns       0.29    2097152
+multiply                             69.3 ns      11.72    4194304
+multiply                             66.3 ns      14.18    8388608
+
+
+Here we see similar results to mark 5, but with out a large exception in the number, maybe only that the 4096 iteration is slightly faster than the 2048 and equal to 1024. Also it shows the best results in the end, the closest to the benchmark paper, although it is still twice as slow. 
+
+412
+
+Mark7
+# OS:   Windows 10; 10.0; amd64
+# JVM:  Oracle Corporation; 1.8.0_101
+# CPU:  Intel64 Family 6 Model 58 Stepping 9, GenuineIntel; 8 "cores"
+# Date: 2016-09-23T10:28:40+0200
+
+pow	85.7	ns	0.14	4194304
+exp	61.2	ns	0.86	4194304
+log	60.7	ns	6.45	4194304
+sin	121.9	ns	4.33	2097152
+cos	123.6	ns	0.31	2097152
+tan	151.7	ns	0.45	2097152
+asin	267.5	ns	0.47	1048576
+acos	261.3	ns	0.82	1048576
+atan	51.9	ns	0.14	8388608
+
+# OS: Windows 10; 10.0; x86
+# JVM: Oracle Corporation; 1.8.0_60
+# CPU: Intel64 Family 6 Model 42 Stepping 7, GenuineIntel; 8 "cores"
+# Date: 2016-09-24T11:27:34+0200
+pow     77.9    ns      1.35    4194304
+exp     55.1    ns      0.08    8388608
+log     32.0    ns      0.76    8388608
+sin     67.9    ns      0.04    4194304
+cos     65.8    ns      0.62    4194304
+tan     104.0   ns      0.81    4194304
+asin    230.3   ns      5.02    2097152
+acos    223.3   ns      2.92    2097152
+atan    54.1    ns      0.02    8388608
+
+Looking at my computer the results better than the with the mark 1-6, but still slower, 2x slower with log, 30ns slower in asin and 50ns slower acos, the only thing that is quite similar is the atan.
+But looking at the results the fellow students computer results are quite similar to the becnhmarking papers results, exceptions are sin, cos and tan functions, that take less time. The sin, cos functions are 2x faster and the tan is 40ns fater. 
+ 
+The suprise is the difference between my computer and the benchmarking paper, as we can see that the other computer is more similar to the papers.
