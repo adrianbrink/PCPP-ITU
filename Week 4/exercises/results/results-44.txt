@@ -4,3 +4,12 @@ Memoizer2                    1754647557,6 ns 78966038,67          2
 Memoizer3                    1473591670,1 ns 37837774,90          2
 Memoizer4                    1467172943,5 ns 106127748,65          2
 Memoizer5                    1381468968,0 ns 46552439,63          2
+
+
+Memoizer 5 performs best and is 8 microseconds faster than the second best memoizer4
+And this results agree with the lectures.
+Memoizer 3 is close to memoizer4, but probably it had duplications.
+And memoizer 4 and 5 are the thread safe and scalable.
+
+448.
+We could try to experiment with thread count, trying out 32 or even 64 threads.
