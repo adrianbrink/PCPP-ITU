@@ -1,0 +1,98 @@
+# OS:   Windows 10; 10.0; amd64
+# JVM:  Oracle Corporation; 1.8.0_101
+# CPU:  Intel64 Family 6 Model 58 Stepping 9, GenuineIntel; 8 "cores"
+# Date: 2016-10-07T11:05:47+0200
+
+class SynchronizedMap
+        17 maps to B
+       117 maps to C
+        34 maps to F
+       217 maps to E
+        17 maps to B
+        17 maps to B
+       217 maps to E
+        34 maps to F
+       217 maps to E
+        17 maps to B
+        34 maps to F
+
+class StripedMap
+        17 maps to B
+       117 maps to C
+        34 maps to F
+       217 maps to E
+        17 maps to B
+        17 maps to B
+       217 maps to E
+        34 maps to F
+       217 maps to E
+        17 maps to B
+        34 maps to F
+SynchronizedMap       16        1098305.1 us   25993.22          2
+99992.0
+StripedMap            16         298459.1 us   72133.62          2
+99992.0
+SynchronizedMap       1         2250981.9 us   81013.80          2
+StripedMap            1         2298032.0 us   97887.99          2
+SynchronizedMap       2         2694565.9 us   85981.99          2
+StripedMap            2         1104266.8 us   29400.13          2
+SynchronizedMap       3         3187759.2 us   88444.72          2
+StripedMap            3          795425.9 us   28897.82          2
+SynchronizedMap       4         3208850.1 us   56096.02          2
+StripedMap            4          675632.5 us   30548.88          2
+SynchronizedMap       5         3270646.4 us   69008.13          2
+StripedMap            5          613155.8 us   44064.64          2
+SynchronizedMap       6         3356895.2 us   60252.61          2
+StripedMap            6          500649.9 us   76058.10          2
+SynchronizedMap       7         3339376.4 us   57857.37          2
+StripedMap            7          401777.6 us   86753.47          2
+SynchronizedMap       8         3319374.7 us   63858.58          2
+StripedMap            8          469715.2 us   38408.86          2
+SynchronizedMap       9         3304500.8 us   63906.31          2
+StripedMap            9          548122.3 us   27228.84          2
+SynchronizedMap       10        3352801.0 us   92030.56          2
+StripedMap            10         563105.9 us   25587.07          2
+SynchronizedMap       11        3322768.1 us   67660.99          2
+StripedMap            11         562167.1 us   15741.72          2
+SynchronizedMap       12        3359883.1 us   62944.66          2
+StripedMap            12         586660.7 us   28035.14          2
+SynchronizedMap       13        3374101.0 us   56686.81          2
+StripedMap            13         586219.4 us   15603.27          2
+SynchronizedMap       14        3333535.4 us   76828.05          2
+StripedMap            14         594771.8 us   37264.59          2
+SynchronizedMap       15        3389105.4 us   98259.82          2
+StripedMap            15         577712.3 us   15348.81          2
+SynchronizedMap       16        3346489.4 us   42828.07          2
+StripedMap            16         594341.3 us   11093.50          2
+SynchronizedMap       17        3339453.8 us   91050.48          2
+StripedMap            17         592395.9 us   14782.73          2
+SynchronizedMap       18        3453504.1 us   64671.08          2
+StripedMap            18         645912.0 us   30980.67          2
+SynchronizedMap       19        3427155.4 us   78369.68          2
+StripedMap            19         618952.5 us   17582.89          2
+SynchronizedMap       20        3396881.3 us   97994.93          2
+StripedMap            20         641205.6 us   24013.71          2
+SynchronizedMap       21        3455241.9 us   92812.85          2
+StripedMap            21         655445.6 us   11913.70          2
+SynchronizedMap       22        3439955.6 us   96502.46          2
+StripedMap            22         670510.4 us   19936.56          2
+SynchronizedMap       23        3473472.2 us  100389.54          2
+StripedMap            23         675915.9 us   19483.72          2
+SynchronizedMap       24        3378394.3 us  101938.80          2
+StripedMap            24         684797.8 us   34335.13          2
+SynchronizedMap       25        3487911.9 us   76799.08          2
+StripedMap            25         723627.1 us   48565.01          2
+SynchronizedMap       26        3512047.7 us   79501.83          2
+StripedMap            26         701561.5 us   23596.38          2
+SynchronizedMap       27        3492963.6 us   57498.06          2
+StripedMap            27         722480.3 us   27404.57          2
+SynchronizedMap       28        3495584.3 us   81576.13          2
+StripedMap            28         734068.4 us   51354.62          2
+SynchronizedMap       29        3523466.2 us   89329.46          2
+StripedMap            29         744547.8 us   26071.10          2
+SynchronizedMap       30        3554449.0 us   50396.60          2
+StripedMap            30         803200.8 us   73741.34          2
+SynchronizedMap       31        3540565.0 us   95770.33          2
+StripedMap            31         780311.4 us   28141.17          2
+SynchronizedMap       32        3577314.2 us   74606.42          2
+StripedMap            32         785411.6 us   27177.12          2
