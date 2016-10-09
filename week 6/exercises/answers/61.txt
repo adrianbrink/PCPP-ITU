@@ -1,37 +1,17 @@
+6.1.5
+Using locking on all buckets so there is no possibility that someone messes around with the stripes while
+foreach iterates through everything
+
+6.1.7
+There is no suprises SynchronizedMap locks on to the whole map 
+While Striped map locks only on the needed buckets, thus it can run in parallel.
+That is what we can see in the results, using one thread both maps run almost equally, 
+but there is a significant drop in StripedMap already just by using 2 threads.
+
 # OS:   Windows 10; 10.0; amd64
 # JVM:  Oracle Corporation; 1.8.0_101
 # CPU:  Intel64 Family 6 Model 58 Stepping 9, GenuineIntel; 8 "cores"
 # Date: 2016-10-07T11:05:47+0200
-
-class SynchronizedMap
-        17 maps to B
-       117 maps to C
-        34 maps to F
-       217 maps to E
-        17 maps to B
-        17 maps to B
-       217 maps to E
-        34 maps to F
-       217 maps to E
-        17 maps to B
-        34 maps to F
-
-class StripedMap
-        17 maps to B
-       117 maps to C
-        34 maps to F
-       217 maps to E
-        17 maps to B
-        17 maps to B
-       217 maps to E
-        34 maps to F
-       217 maps to E
-        17 maps to B
-        34 maps to F
-SynchronizedMap       16        1098305.1 us   25993.22          2
-99992.0
-StripedMap            16         298459.1 us   72133.62          2
-99992.0
 SynchronizedMap       1         2250981.9 us   81013.80          2
 StripedMap            1         2298032.0 us   97887.99          2
 SynchronizedMap       2         2694565.9 us   85981.99          2
@@ -96,3 +76,16 @@ SynchronizedMap       31        3540565.0 us   95770.33          2
 StripedMap            31         780311.4 us   28141.17          2
 SynchronizedMap       32        3577314.2 us   74606.42          2
 StripedMap            32         785411.6 us   27177.12          2
+
+6.1.8
+Using a unique lock for each stripe would cause a lock overhead.
+Although it maximizes the concurreny, it also maximizes the memory footprint.
+More locks = more overhead.
+
+6.1.9
+The perfomance can increase with 32 stripes, if you have the cores to work the threads.
+But mainly it is because the threads will be less likely to work on a bucket that is locked.
+
+6.1.10
+there is a risk of locking a stripe, only to have the relevant entry moved to a
+different stripe by an intervening call to reallocateBuckets.
