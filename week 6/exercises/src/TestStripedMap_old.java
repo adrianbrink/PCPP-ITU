@@ -14,27 +14,27 @@ import java.util.function.IntToDoubleFunction;
 public class TestStripedMap {
   public static void main(String[] args) {
     SystemInfo();
-    //testAllMaps();    // Must be run with: java -ea TestStripedMap 
+    testAllMaps();    // Must be run with: java -ea TestStripedMap 
     exerciseAllMaps();
-     //timeAllMaps();
+    // timeAllMaps();
   }
 
   private static void timeAllMaps() {
     final int bucketCount = 100_000, lockCount = 32;
     for (int t=1; t<=32; t++) {
       final int threadCount = t;
-      // Mark7(String.format("%-21s %d", "SynchronizedMap", threadCount),
-      //       i -> timeMap(threadCount, 
-      //                    new SynchronizedMap<Integer,String>(bucketCount)));
-      // Mark7(String.format("%-21s %d", "StripedMap", threadCount),
-      //       i -> timeMap(threadCount, 
-      //                    new StripedMap<Integer,String>(bucketCount, lockCount)));
-     Mark7(String.format("%-21s %d", "StripedWriteMap", threadCount),
-           i -> timeMap(threadCount,
-                        new StripedWriteMap<Integer,String>(lockCount, lockCount)));
-//      Mark7(String.format("%-21s %d", "WrapConcHashMap", threadCount),
-//            i -> timeMap(threadCount,
-//                         new WrapConcurrentHashMap<Integer,String>()));
+      Mark7(String.format("%-21s %d", "SynchronizedMap", threadCount),
+            i -> timeMap(threadCount, 
+                         new SynchronizedMap<Integer,String>(bucketCount)));
+      Mark7(String.format("%-21s %d", "StripedMap", threadCount),
+            i -> timeMap(threadCount, 
+                         new StripedMap<Integer,String>(bucketCount, lockCount)));
+      Mark7(String.format("%-21s %d", "StripedWriteMap", threadCount), 
+            i -> timeMap(threadCount, 
+                         new StripedWriteMap<Integer,String>(lockCount, lockCount)));
+      Mark7(String.format("%-21s %d", "WrapConcHashMap", threadCount),
+            i -> timeMap(threadCount, 
+                         new WrapConcurrentHashMap<Integer,String>()));
     }
   }
 
@@ -94,12 +94,12 @@ public class TestStripedMap {
     System.out.println(Mark7(String.format("%-21s %d", "StripedMap", threadCount),
       i -> exerciseMap(threadCount, perThread, range,
                        new StripedMap<Integer,String>(bucketCount, lockCount))));
-   System.out.println(Mark7(String.format("%-21s %d", "StripedWriteMap", threadCount),
-     i -> exerciseMap(threadCount, perThread, range,
-                      new StripedWriteMap<Integer,String>(lockCount, lockCount))));
-   System.out.println(Mark7(String.format("%-21s %d", "WrapConcHashMap", threadCount),
-     i -> exerciseMap(threadCount, perThread, range,
-                      new WrapConcurrentHashMap<Integer,String>())));
+    System.out.println(Mark7(String.format("%-21s %d", "StripedWriteMap", threadCount), 
+      i -> exerciseMap(threadCount, perThread, range,
+                       new StripedWriteMap<Integer,String>(lockCount, lockCount))));
+    System.out.println(Mark7(String.format("%-21s %d", "WrapConcHashMap", threadCount),
+      i -> exerciseMap(threadCount, perThread, range,
+                       new WrapConcurrentHashMap<Integer,String>())));
   }
 
   // Very basic sequential functional test of a hash map.  You must
@@ -107,6 +107,7 @@ public class TestStripedMap {
   //   java -ea TestStripedMap
   private static void testMap(final OurMap<Integer, String> map) {
     System.out.printf("%n%s%n", map.getClass());
+
     assert map.size() == 0;
     assert !map.containsKey(117);
     assert !map.containsKey(-2);
@@ -153,10 +154,10 @@ public class TestStripedMap {
   }
 
   private static void testAllMaps() {
-    //testMap(new SynchronizedMap<Integer,String>(25));
-    //testMap(new StripedMap<Integer,String>(25, 5));
+    testMap(new SynchronizedMap<Integer,String>(25));
+    testMap(new StripedMap<Integer,String>(25, 5));
     testMap(new StripedWriteMap<Integer,String>(25, 5));
-    //testMap(new WrapConcurrentHashMap<Integer,String>());
+    testMap(new WrapConcurrentHashMap<Integer,String>());
   }
 
   // --- Benchmarking infrastructure ---
@@ -428,25 +429,25 @@ class StripedMap<K,V> implements OurMap<K,V> {
 
   // Return value v associated with key k, or null
   public V get(K k) {
+
     final int h = getHash(k), stripe = h % lockCount;
     synchronized (locks[stripe]) {
       final int hash = h % buckets.length;
-      ItemNode<K, V> node = ItemNode.search(buckets[hash], k);
-      if (node != null)
-        return node.v;
-      else
-        return null;
+      int size = sizes[stripe]; // for visibility reasons
+      ItemNode<K,V> node = ItemNode.search(buckets[hash], k);
+      if (node == null) return null;
+      else return node.v;
     }
   }
 
   public int size() {
-    int result = 0;
-    for(int s = 0; s<lockCount; s++){
-      synchronized (locks[s]){
-        result += sizes[s];
-      }
+    int size = 0;
+    for (int i = 0; i<lockCount; i++)
+    {
+      size += sizes[i];
     }
-    return result;
+
+    return size;
   }
 
   // Put v at key k, or update if already present 
@@ -472,14 +473,13 @@ class StripedMap<K,V> implements OurMap<K,V> {
     final int h = getHash(k), stripe = h % lockCount;
     synchronized (locks[stripe]) {
       final int hash = h % buckets.length;
-      ItemNode<K, V> node = ItemNode.search(buckets[hash], k);
-      if (node != null)
-        return node.v;
+      final ItemNode<K,V> node = ItemNode.search(buckets[hash], k);
+      if (node != null) return node.v;
       else {
-        buckets[hash] = new ItemNode<K, V>(k, v, buckets[hash]);
+        buckets[hash] = new ItemNode<K,V>(k, v, buckets[hash]);
         sizes[stripe]++;
         return null;
-      }
+      } 
     }
   }
 
@@ -488,25 +488,13 @@ class StripedMap<K,V> implements OurMap<K,V> {
     final int h = getHash(k), stripe = h % lockCount;
     synchronized (locks[stripe]) {
       final int hash = h % buckets.length;
-      ItemNode<K, V> prev = buckets[hash];
-      if (prev == null)
-        return null;
-      else if (k.equals(prev.k)) {        // Delete first ItemNode
-        V old = prev.v;
+      final ItemNode<K,V> node = ItemNode.search(buckets[hash], k);
+      if (node == null) return null;
+      else {
+        //ItemNode.delete(node, k)
+        
         sizes[stripe]--;
-        buckets[hash] = prev.next;
-        return old;
-      } else {                            // Search later ItemNodes
-        while (prev.next != null && !k.equals(prev.next.k))
-          prev = prev.next;
-        // Now prev.next == null || k.equals(prev.next.k)
-        if (prev.next != null) {  // Delete ItemNode prev.next
-          V old = prev.next.v;
-          sizes[stripe]--;
-          prev.next = prev.next.next;
-          return old;
-        } else
-          return null;
+        return null;
       }
     }
   }
@@ -518,15 +506,7 @@ class StripedMap<K,V> implements OurMap<K,V> {
   // may redistribute items between buckets but each item stays in the
   // same stripe.
   public void forEach(Consumer<K,V> consumer) {
-    lockAllAndThen(() -> {
-      for (int hash=0; hash<buckets.length; hash++) {
-        ItemNode<K,V> node = buckets[hash];
-        while (node != null) {
-          consumer.accept(node.k, node.v);
-          node = node.next;
-        }
-      }
-    });
+    // TO DO: IMPLEMENT
   }
 
   // First lock all stripes.  Then double bucket table size, rehash,
@@ -648,25 +628,13 @@ class StripedWriteMap<K,V> implements OurMap<K,V> {
 
   // Return value v associated with key k, or null
   public V get(K k) {
-    final ItemNode<K,V>[] bs = buckets;
-    final int h = getHash(k), stripe = h % lockCount, hash = h % bs.length;
-    // The sizes access is necessary for visibility of bs elements
-    sizes.get(stripe);
-    ItemNode<K,V> node = ItemNode.searchAndGet(bs[hash], k);
-    if (node == null) return null;
-    return node.v;
+    // TO DO: IMPLEMENT
+    return null;
   }
 
   public int size() {
-
-    int size = 0;
-
-    for(int i = 0; i < sizes.length(); i++)
-    {
-      size += sizes.get(i);
-    } 
     // TO DO: IMPLEMENT
-    return size;
+    return 0;
   }
 
   // Put v at key k, or update if already present.  The logic here has
@@ -695,63 +663,19 @@ class StripedWriteMap<K,V> implements OurMap<K,V> {
 
   // Put v at key k only if absent.  
   public V putIfAbsent(K k, V v) {
-
-    final int h = getHash(k), stripe = h % lockCount;
-    ItemNode<K,V> result = ItemNode.searchAndGet(buckets[h % buckets.length], k);
-    if (result != null) return result.v;
-
-    final Holder<V> old = new Holder<V>();
-    ItemNode<K,V>[] bs;
-    int afterSize; 
-    synchronized (locks[stripe]) {
-      bs = buckets;
-      final int hash = h % bs.length;
-      final ItemNode<K,V> node = bs[hash], 
-        newNode = ItemNode.delete(node, k, old);
-      bs[hash] = new ItemNode<K,V>(k, v, newNode);
-      // Write for visibility; increment if k was not already in map
-      afterSize = sizes.addAndGet(stripe, newNode == node ? 1 : 0);
-    }
-    if (afterSize * lockCount > bs.length)
-      reallocateBuckets(bs);
-    return old.get();
-
+    // TO DO: IMPLEMENT
+    return null;
   }
 
   // Remove and return the value at key k if any, else return null
   public V remove(K k) {
-
-    final int h = getHash(k), stripe = h % lockCount;
-    synchronized (locks[stripe]) {
-      final int hash = h % buckets.length;
-      // find node
-      sizes.get(stripe);
-      ItemNode<K,V> node = ItemNode.searchAndGet(buckets[hash], k);
-      
-      if (node == null) return null;
-      else {
-        V val = node.v;
-        buckets[hash] = ItemNode.delete(buckets[hash], k, new Holder<V>());
-        sizes.getAndDecrement(1);
-        return val;
-      }
-      
-    }
+    // TO DO: IMPLEMENT
+    return null;
   }
 
   // Iterate over the hashmap's entries one stripe at a time.  
   public void forEach(Consumer<K,V> consumer) {
     // TO DO: IMPLEMENT
-
-    ItemNode<K,V>[] bs = buckets;
-
-    for (int hash=0; hash<bs.length; hash++) {
-      ItemNode<K,V> node = bs[hash];
-      while (node != null) {
-        consumer.accept(node.k, node.v);
-        node = node.next;
-      }
-    }
   }
 
   // Now that reallocation happens internally, do not do it externally
@@ -825,15 +749,6 @@ class StripedWriteMap<K,V> implements OurMap<K,V> {
         } else 
           node = node.next;
       return false;
-    }
-
-    public static <K,V> ItemNode<K,V> searchAndGet(ItemNode<K,V> node, K k) {
-      while (node != null) 
-        if (k.equals(node.k)) {
-          return node;
-        } else 
-          node = node.next;
-      return null;
     }
     
     public static <K,V> ItemNode<K,V> delete(ItemNode<K,V> node, K k, Holder<V> old) {

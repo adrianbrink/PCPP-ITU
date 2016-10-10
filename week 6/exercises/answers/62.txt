@@ -1,0 +1,9 @@
+6.2.3
+"Why do you not need to write to the stripe size if nothing was added?"
+Because if nothing is added the size of the stripe doesn't change
+
+6.2.6
+SynchronizedMap is the slowest which is as expected since it locks on the whole map, and in effect runs sequentially.
+StripedMap is a lot faster, since it only locks on the stripes and therefor can run in parallel.
+StripedWriteMap is even faster since Read operations do not need locks.
+WrapConcHashMap is actually a bit slower than StripedWriteMap. This is a bit strange since it uses more clever optimization techniques than StripedWriteMap, and it should therefore run faster.
