@@ -1,0 +1,32 @@
+1.
+# OS:   Mac OS X; 10.12; x86_64
+# JVM:  Oracle Corporation; 1.8.0_102
+# CPU:  null; 4 "cores"
+# Date: 2016-10-12T16:27:20+0200
+current thread hashCode               0.0 us       0.00  134217728
+ThreadLocalRandom                     0.0 us       0.00   67108864
+AtomicLong                       617330.4 us   50782.95          2
+LongAdder                        115541.6 us    7819.68          4
+LongCounter                      451000.1 us  181644.73          2
+NewLongAdder                     354938.5 us   52084.81          2
+NewLongAdderPadded               167280.4 us   56267.47          2
+
+The results are inline of what I would expect to happen on my machine and hence they are completely plausible.
+
+2.
+# OS:   Mac OS X; 10.12; x86_64
+# JVM:  Oracle Corporation; 1.8.0_102
+# CPU:  null; 4 "cores"
+# Date: 2016-10-12T16:36:14+0200
+current thread hashCode               0.0 us       0.00  134217728
+ThreadLocalRandom                     0.0 us       0.00   67108864
+AtomicLong                       653534.6 us   56450.77          2
+LongAdder                        135762.0 us   16204.44          2
+LongCounter                      491648.2 us  227396.16          2
+NewLongAdder                     323836.6 us   60646.89          2
+NewLongAdderPadded               142077.3 us   17181.42          2
+NewLongAdderLessPadded           202845.7 us   67010.22          2
+
+The allocations of newObject() have a positive impact and should be kept.
+
+3.
