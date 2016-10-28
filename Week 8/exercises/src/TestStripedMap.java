@@ -14,8 +14,8 @@ import java.util.function.IntToDoubleFunction;
 public class TestStripedMap {
   public static void main(String[] args) {
     SystemInfo();
-    //testAllMaps();    // Must be run with: java -ea TestStripedMap 
-    exerciseAllMaps();
+    testAllMaps();    // Must be run with: java -ea TestStripedMap
+    //exerciseAllMaps();
      //timeAllMaps();
   }
 
