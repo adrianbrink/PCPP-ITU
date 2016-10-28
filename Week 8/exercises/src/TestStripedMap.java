@@ -14,8 +14,8 @@ import java.util.function.IntToDoubleFunction;
 public class TestStripedMap {
   public static void main(String[] args) {
     SystemInfo();
-    //testAllMaps();    // Must be run with: java -ea TestStripedMap 
-    exerciseAllMaps();
+    testAllMaps();    // Must be run with: java -ea TestStripedMap
+    //exerciseAllMaps();
      //timeAllMaps();
   }
 
@@ -149,7 +149,10 @@ public class TestStripedMap {
     assert map.get(17).equals("B") && map.containsKey(17);
     assert map.get(217).equals("E") && map.containsKey(217);
     assert map.get(34).equals("F") && map.containsKey(34);
-    map.forEach((k, v) -> System.out.printf("%10d maps to %s%n", k, v));    
+    map.forEach((k, v) -> System.out.printf("%10d maps to %s%n", k, v));
+    map.reallocateBuckets();
+    map.forEach((k, v) -> System.out.printf("%10d maps to %s%n", k, v));
+    assert map.remove(417) == null;
   }
 
   private static void testAllMaps() {
