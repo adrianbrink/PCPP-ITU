@@ -639,7 +639,7 @@ class StripedWriteMap<K,V> implements OurMap<K,V> {
   }
 
   // Return true if key k is in map, else false
-  public boolean containsKey(K k) {
+  public boolean containsKey(K k) {    
     final ItemNode<K,V>[] bs = buckets;
     final int h = getHash(k), stripe = h % lockCount, hash = h % bs.length;
     // The sizes access is necessary for visibility of bs elements
@@ -874,7 +874,7 @@ class WrapConcurrentHashMap<K,V> implements OurMap<K,V> {
   final ConcurrentHashMap<K,V> underlying = new ConcurrentHashMap<K,V>();
 
   public boolean containsKey(K k) {
-    return underlying.containsKey(k);
+      return underlying.containsKey(k);    
   }
 
   public V get(K k) {
@@ -882,7 +882,7 @@ class WrapConcurrentHashMap<K,V> implements OurMap<K,V> {
   }
 
   public V put(K k, V v) {
-    return underlying.put(k, v);
+    return underlying.put(k, v);  
   }
 
   public V putIfAbsent(K k, V v) {
