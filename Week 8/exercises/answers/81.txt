@@ -1,0 +1,15 @@
+1.) The tests seem to cover everything, however they should be split up into unit tests.
+One test for each function, and them maybe a couple of integration tests to test the
+interactions between the methods. In the current state it is shitty to test.
+
+        assert map.remove(9999) == null;
+        assert map.remove(117) == null;
+
+        Integer[] keys = {17,34,217};
+        String[] values = {"B", "F", "E"};
+        map.forEach((k,v) -> {
+            assert Arrays.asList(keys).contains(k);
+            assert Arrays.asList(values).contains(v);
+        });
+
+2.)
