@@ -9,8 +9,8 @@ import java.util.ArrayList;
 public class Ex81 {
 
 	static int threadCount = 16, range = 99, perThread = 1000, stripeCount = 7, bucketCount = 77;
-	//static StripedWriteMap<Integer, String> map = new StripedWriteMap<Integer,String>(bucketCount, stripeCount);
-	static WrapConcurrentHashMap<Integer, String> map = new WrapConcurrentHashMap<Integer,String>();
+	static StripedWriteMap<Integer, String> map = new StripedWriteMap<Integer,String>(bucketCount, stripeCount);
+	//static WrapConcurrentHashMap<Integer, String> map = new WrapConcurrentHashMap<Integer,String>();
 	static CyclicBarrier barrier = new CyclicBarrier(threadCount);
 	static int[] counts = new int[threadCount];
 	static final ArrayList<java.util.function.Consumer<WrappingConsumer>> actions = new ArrayList<java.util.function.Consumer<WrappingConsumer>>();

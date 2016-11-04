@@ -11,5 +11,3 @@ interactions between the methods. In the current state it is shitty to test.
             assert Arrays.asList(keys).contains(k);
             assert Arrays.asList(values).contains(v);
         });
-
-2.)
