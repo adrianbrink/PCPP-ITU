@@ -31,3 +31,13 @@ this didn't work since if a thread checks that a key is not present, and then in
 
 5) the counts are a bit off, and we are not sure why
 6) we could check the foreach, size and get method in parallel
+
+8.2
+1.) Removing synchronized leads to errors discovered by the functional tests.
+2.) On some runs it matters on others the tests pass. Furthermore, the tests are off by less than in the previous test.
+3.) The tests don't discover it.
+4.) This has no impact as far as we can tell.
+5.) We could write test cases that we expect to fail at all times and see if they pass.
+We could configure the tests to run 1000 times instead of just ones. This would help to be more certain that the tests are valid and not just lucky.
+Try a wider and smaller keyrange.
+Add small errors and see if the tests catch them.

@@ -32,7 +32,7 @@ class StripedWriteMapMutation<K,V> implements OurMap<K,V> {
   private volatile ItemNode<K,V>[] buckets;
   private final int lockCount;
   private final Object[] locks;
-  private final AtomicIntegerArray sizes;  
+  private final int[] sizes;
 
   public StripedWriteMapMutation(int bucketCount, int lockCount) {
     if (bucketCount % lockCount != 0)
@@ -40,7 +40,7 @@ class StripedWriteMapMutation<K,V> implements OurMap<K,V> {
     this.lockCount = lockCount;
     this.buckets = makeBuckets(bucketCount);
     this.locks = new Object[lockCount];
-    this.sizes = new AtomicIntegerArray(lockCount);
+    this.sizes = new int[lockCount];
     for (int stripe=0; stripe<lockCount; stripe++) 
       this.locks[stripe] = new Object();
   }
@@ -62,7 +62,7 @@ class StripedWriteMapMutation<K,V> implements OurMap<K,V> {
     final ItemNode<K,V>[] bs = buckets;
     final int h = getHash(k), stripe = h % lockCount, hash = h % bs.length;
     // The sizes access is necessary for visibility of bs elements
-    return sizes.get(stripe) != 0 && ItemNode.search(bs[hash], k, null);
+    return sizes[stripe] != 0 && ItemNode.search(bs[hash], k, null);
   }
 
   // Return value v associated with key k, or null
@@ -70,7 +70,7 @@ class StripedWriteMapMutation<K,V> implements OurMap<K,V> {
     final ItemNode<K,V>[] bs = buckets;
     final int h = getHash(k), stripe = h % lockCount, hash = h % bs.length;
     // The sizes access is necessary for visibility of bs elements
-    sizes.get(stripe);
+    int dummy = sizes[stripe];
     ItemNode<K,V> node = ItemNode.searchAndGet(bs[hash], k);
     if (node == null) return null;
     return node.v;
@@ -80,9 +80,9 @@ class StripedWriteMapMutation<K,V> implements OurMap<K,V> {
 
     int size = 0;
 
-    for(int i = 0; i < sizes.length(); i++)
+    for(int i = 0; i < sizes.length; i++)
     {
-      size += sizes.get(i);
+      size += sizes[i];
     } 
     // TO DO: IMPLEMENT
     return size;
@@ -97,7 +97,7 @@ class StripedWriteMapMutation<K,V> implements OurMap<K,V> {
     final int h = getHash(k), stripe = h % lockCount;
     final Holder<V> old = new Holder<V>();
     ItemNode<K,V>[] bs;
-    int afterSize; 
+    int afterSize = 0;
     synchronized (locks[stripe]) {
       bs = buckets;
       final int hash = h % bs.length;
@@ -105,7 +105,11 @@ class StripedWriteMapMutation<K,V> implements OurMap<K,V> {
         newNode = ItemNode.delete(node, k, old);
       bs[hash] = new ItemNode<K,V>(k, v, newNode);
       // Write for visibility; increment if k was not already in map
-      afterSize = sizes.addAndGet(stripe, newNode == node ? 1 : 0);
+      if (newNode == node) {
+        afterSize = sizes[stripe]++;
+      } else {
+        int dummy = sizes[stripe] + 0;
+      }
     }
     if (afterSize * lockCount > bs.length)
       reallocateBuckets(bs);
@@ -121,7 +125,7 @@ class StripedWriteMapMutation<K,V> implements OurMap<K,V> {
 
     final Holder<V> old = new Holder<V>();
     ItemNode<K,V>[] bs;
-    int afterSize; 
+    int afterSize = 0;
     synchronized (locks[stripe]) {
       bs = buckets;
       final int hash = h % bs.length;
@@ -129,7 +133,12 @@ class StripedWriteMapMutation<K,V> implements OurMap<K,V> {
         newNode = ItemNode.delete(node, k, old);
       bs[hash] = new ItemNode<K,V>(k, v, newNode);
       // Write for visibility; increment if k was not already in map
-      afterSize = sizes.addAndGet(stripe, newNode == node ? 1 : 0);
+      //afterSize = sizes.addAndGet(stripe, newNode == node ? 1 : 0);
+      if (newNode == node) {
+        afterSize = sizes[stripe]++;
+      } else {
+        int dummy = sizes[stripe] + 0;
+      }
     }
     if (afterSize * lockCount > bs.length)
       reallocateBuckets(bs);
@@ -144,14 +153,14 @@ class StripedWriteMapMutation<K,V> implements OurMap<K,V> {
     synchronized (locks[stripe]) {
       final int hash = h % buckets.length;
       // find node
-      sizes.get(stripe);
+      int dummy = sizes[stripe];
       ItemNode<K,V> node = ItemNode.searchAndGet(buckets[hash], k);
       
       if (node == null) return null;
       else {
         V val = node.v;
         buckets[hash] = ItemNode.delete(buckets[hash], k, new Holder<V>());
-        sizes.getAndDecrement(1);
+        sizes[1]--;
         return val;
       }
       
