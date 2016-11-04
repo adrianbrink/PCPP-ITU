@@ -11,3 +11,23 @@ interactions between the methods. In the current state it is shitty to test.
             assert Arrays.asList(keys).contains(k);
             assert Arrays.asList(values).contains(v);
         });
+
+2.)  To what degree does the test convince you that the StripedWriteMap implementation is correct? In particular, does it tell you anything about the correctness of containsKey?
+
+It doesn't find any defects.
+
+We first tried implementing the tests for putting keys with
+if(! map.containsKey(t.key))
+{
+	map.putIfAbsent(t.key, t.value);	
+	t.sum.addAndGet(t.key);
+    t.counts[t.id]++;
+}
+
+this didn't work since if a thread checks that a key is not present, and then inserts it and incerement sum and count, in reality another thread might have inserted they key in the meantime.
+
+3) doesn't find any defects
+4) okay
+
+5) the counts are a bit off, and we are not sure why
+6) we could check the foreach, size and get method in parallel
